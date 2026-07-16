@@ -1,0 +1,30 @@
+name: Automated Contribution Engine
+
+on:
+  schedule:
+    # Runs daily at 23:00 UTC (Adjust as needed)
+    - cron: '0 23 * * *'
+  workflow_dispatch: # Allows manual trigger from the Actions tab
+
+jobs:
+  commit-job:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Crucial: gives the runner permission to push to your repo
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run Commit Bot
+        run: python bot.py
+
+      - name: Push Changes
+        run: git push origin main
